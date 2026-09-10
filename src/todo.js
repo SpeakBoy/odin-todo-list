@@ -9,4 +9,4 @@ class ToDo
     }
 };
 
-export { ToDo };
+export default ToDo;

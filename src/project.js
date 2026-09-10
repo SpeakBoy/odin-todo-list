@@ -11,4 +11,4 @@ class Project
     }
 }
 
-export { Project };
+export default Project;

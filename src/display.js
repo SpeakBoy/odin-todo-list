@@ -1,5 +1,15 @@
 class DisplayController 
 {
+    static clearProjectsDisplay()
+    {
+        const projectsContainer = document.querySelector("#projects");
+        
+        while (projectsContainer.firstChild)
+        {
+            projectsContainer.removeChild(projectsContainer.lastChild);
+        }
+    }
+
     static displayProjects(projects)
     {
         const projectsContainer = document.querySelector("#projects");
@@ -30,4 +40,4 @@ class DisplayController
 
 }
 
-export { DisplayController };
+export default DisplayController;
