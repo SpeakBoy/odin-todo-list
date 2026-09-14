@@ -27,6 +27,19 @@ class DisplayController
             {
                 const toDoDisplay = document.createElement("div");
                 toDoDisplay.textContent = `${todo.title} - ${todo.dueDate}`;
+                switch (todo.priority)
+                {
+                    case "high":
+                        toDoDisplay.style.color = "red";
+                        break;
+                    case "medium":
+                        toDoDisplay.style.color = "orange";
+                        break;
+                    case "low":
+                        toDoDisplay.style.color = "green";
+                        break;
+                }
+
 
                 projectToDos.appendChild(toDoDisplay);
             }
