@@ -26,20 +26,31 @@ class DisplayController
             for (const todo of project.todos)
             {
                 const toDoDisplay = document.createElement("div");
-                toDoDisplay.textContent = `${todo.title} - ${todo.dueDate}`;
+                const toDoSummary = document.createElement("p");
+                toDoSummary.textContent = `${todo.title} - ${todo.dueDate}`;
                 switch (todo.priority)
                 {
                     case "high":
-                        toDoDisplay.style.color = "red";
+                        toDoSummary.style.color = "red";
                         break;
                     case "medium":
-                        toDoDisplay.style.color = "orange";
+                        toDoSummary.style.color = "orange";
                         break;
                     case "low":
-                        toDoDisplay.style.color = "green";
+                        toDoSummary.style.color = "green";
                         break;
                 }
 
+                const updateToDoDialog = document.querySelector("#update-todo-dialog");
+                const updateToDoButton = document.createElement("button");
+                updateToDoButton.textContent = "Update";
+                updateToDoButton.addEventListener("click", () => {
+                    document.querySelector("#update-todo-id").value = todo.id;
+                    updateToDoDialog.showModal();
+                });
+
+                toDoDisplay.appendChild(toDoSummary);
+                toDoDisplay.appendChild(updateToDoButton);
 
                 projectToDos.appendChild(toDoDisplay);
             }
@@ -50,7 +61,6 @@ class DisplayController
             projectsContainer.appendChild(projectContainer);
         }
     }
-
 }
 
 export default DisplayController;

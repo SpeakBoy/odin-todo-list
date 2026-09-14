@@ -10,19 +10,87 @@ class AppController
     {
         const defaultProject = new Project("Default");
         this.#projects.push(defaultProject);
-        this.initCreateProjectForm();
-        this.initCreateToDoForm();
+        this.#initCreateProjectForm();
+        this.#initCreateToDoForm();
+        this.#initUpdateToDoForm();
         DisplayController.clearProjectsDisplay();
         DisplayController.displayProjects(this.#projects);
     }
 
-    initCreateToDoForm()
+    #initUpdateToDoForm()
+    {
+        const updateToDoDialog = document.querySelector("#update-todo-dialog");
+        updateToDoDialog.addEventListener("toggle", () => {
+            if (!updateToDoDialog.open)
+            {
+                return;
+            }
+
+            const id = document.querySelector("#update-todo-id").value;
+
+            const targetTodo = this.#getTodoByID(id);
+
+            document.querySelector("#update-todo-title").value = targetTodo.title;
+            document.querySelector("#update-todo-description").value = targetTodo.description;
+            document.querySelector("#update-todo-due-date").value = targetTodo.dueDate;
+            document.querySelector("#update-todo-priority").value = targetTodo.priority;
+        });
+        
+
+        const updateToDoForm = document.querySelector("#update-todo-form");
+        updateToDoForm.addEventListener("reset", () => updateToDoDialog.close());
+        updateToDoForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            if (!updateToDoForm.checkValidity())
+            {
+                updateToDoForm.reportValidity();
+                return;
+            }
+
+            updateToDoDialog.close();
+
+            const id = document.querySelector("#update-todo-id").value;
+            const title = document.querySelector("#update-todo-title").value;
+            const description = document.querySelector("#update-todo-description").value;
+            const dueDate = document.querySelector("#update-todo-due-date").value;
+            const priority = document.querySelector("#update-todo-priority").value;
+
+            const todo = this.#getTodoByID(id);
+            todo.title = title;
+            todo.description = description;
+            todo.dueDate = dueDate;
+            todo.priority = priority;
+
+            DisplayController.clearProjectsDisplay();
+            DisplayController.displayProjects(this.#projects);
+
+            updateToDoForm.reset();
+        });
+    }
+
+    #getTodoByID(id)
+    {
+        for (const project of this.#projects)
+        {
+            for (const todo of project.todos)
+            {
+                if (id === todo.id)
+                {
+                    return todo;
+                }
+            }
+        }
+        return null;
+    }
+
+    #initCreateToDoForm()
     {
         const createToDoButton = document.querySelector("#create-todo-button");
         const createToDoDialog = document.querySelector("#create-todo-dialog");
         createToDoButton.addEventListener("click", () => {
-            clearProjectSelector();
-            fillProjectSelector(this.#projects);
+            this.#clearProjectSelector();
+            this.#fillProjectSelector();
             createToDoDialog.showModal()
         });
         const createToDoForm = document.querySelector("#create-todo-form");
@@ -59,30 +127,30 @@ class AppController
 
             createToDoForm.reset();
         });
+    }
 
-        function fillProjectSelector(projects)
+    #fillProjectSelector()
+    {
+        const projectSelector = document.querySelector("#todo-project");
+        for (const project of this.#projects)
         {
-            const projectSelector = document.querySelector("#todo-project");
-            for (const project of projects)
-            {
-                const projectOption = document.createElement("option");
-                projectOption.value = project.title;
-                projectOption.textContent = project.title;
-                projectSelector.appendChild(projectOption);
-            }
-        }
-
-        function clearProjectSelector()
-        {
-            const projectSelector = document.querySelector("#todo-project");
-            while (projectSelector.firstChild)
-            {
-                projectSelector.removeChild(projectSelector.lastChild);
-            }
+            const projectOption = document.createElement("option");
+            projectOption.value = project.title;
+            projectOption.textContent = project.title;
+            projectSelector.appendChild(projectOption);
         }
     }
 
-    initCreateProjectForm()
+    #clearProjectSelector()
+    {
+        const projectSelector = document.querySelector("#todo-project");
+        while (projectSelector.firstChild)
+        {
+            projectSelector.removeChild(projectSelector.lastChild);
+        }
+    }
+
+    #initCreateProjectForm()
     {
         const createProjectButton = document.querySelector("#create-project-button");
         const createProjectDialog = document.querySelector("#create-project-dialog");
