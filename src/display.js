@@ -49,8 +49,17 @@ class DisplayController
                     updateToDoDialog.showModal();
                 });
 
+                const deleteToDoDialog = document.querySelector("#delete-todo-dialog");
+                const deleteToDoButton = document.createElement("button");
+                deleteToDoButton.textContent = "Delete";
+                deleteToDoButton.addEventListener("click", () => {
+                    document.querySelector("#delete-todo-id").value = todo.id;
+                    deleteToDoDialog.showModal()
+                });
+
                 toDoDisplay.appendChild(toDoSummary);
                 toDoDisplay.appendChild(updateToDoButton);
+                toDoDisplay.appendChild(deleteToDoButton);
 
                 projectToDos.appendChild(toDoDisplay);
             }

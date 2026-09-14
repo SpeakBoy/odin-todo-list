@@ -13,8 +13,52 @@ class AppController
         this.#initCreateProjectForm();
         this.#initCreateToDoForm();
         this.#initUpdateToDoForm();
+        this.#initDeleteToDoForm();
         DisplayController.clearProjectsDisplay();
         DisplayController.displayProjects(this.#projects);
+    }
+
+    #initDeleteToDoForm()
+    {
+        const deleteToDoDialog = document.querySelector("#delete-todo-dialog");
+        deleteToDoDialog.addEventListener("toggle", () => {
+            if (!deleteToDoDialog.open)
+            {
+                return;
+            }
+
+            const id = document.querySelector("#delete-todo-id").value;
+
+            const targetTodo = this.#getTodoByID(id);
+
+            document.querySelector("#delete-todo-title").value = targetTodo.title;
+            document.querySelector("#delete-todo-description").value = targetTodo.description;
+            document.querySelector("#delete-todo-due-date").value = targetTodo.dueDate;
+            document.querySelector("#delete-todo-priority").value = targetTodo.priority;
+        });
+
+        const deleteToDoForm = document.querySelector("#delete-todo-form");
+        deleteToDoForm.addEventListener("reset", () => deleteToDoDialog.close());
+        deleteToDoForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            if (!deleteToDoForm.checkValidity())
+            {
+                deleteToDoForm.reportValidity();
+                return;
+            }
+
+            deleteToDoDialog.close();
+
+            const id = document.querySelector("#delete-todo-id").value;
+
+            this.#deleteTodoByID(id);
+
+            DisplayController.clearProjectsDisplay();
+            DisplayController.displayProjects(this.#projects);
+
+            deleteToDoForm.reset();
+        });
     }
 
     #initUpdateToDoForm()
@@ -82,6 +126,22 @@ class AppController
             }
         }
         return null;
+    }
+
+    #deleteTodoByID(id)
+    {
+        for (const project of this.#projects)
+        {
+            for (const todo of project.todos)
+            {
+                if (id === todo.id)
+                {
+                    const indexToDelete = project.todos.indexOf(todo);
+                    project.todos.splice(indexToDelete, 1);
+                    return;
+                }
+            }
+        }
     }
 
     #initCreateToDoForm()
