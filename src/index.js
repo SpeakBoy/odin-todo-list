@@ -4,18 +4,34 @@ import DisplayController from "./display.js";
 
 class AppController
 {
-    #projects = [];
+    #projects = [new Project("Default")];
+
+    constructor()
+    {
+        const storedProjects = JSON.parse(localStorage.getItem("projects"));
+
+        if (storedProjects !== null)
+        {
+            this.#projects = storedProjects;
+        }
+    }
 
     init()
     {
-        const defaultProject = new Project("Default");
-        this.#projects.push(defaultProject);
         this.#initCreateProjectForm();
         this.#initCreateToDoForm();
         this.#initUpdateToDoForm();
         this.#initDeleteToDoForm();
         DisplayController.clearProjectsDisplay();
         DisplayController.displayProjects(this.#projects);
+        this.#updateStoredProjects();
+    }
+
+    #updateStoredProjects()
+    {
+        const projectsToStore = JSON.stringify(this.#projects);
+
+        localStorage.setItem("projects", projectsToStore);
     }
 
     #initDeleteToDoForm()
@@ -56,6 +72,7 @@ class AppController
 
             DisplayController.clearProjectsDisplay();
             DisplayController.displayProjects(this.#projects);
+            this.#updateStoredProjects();
 
             deleteToDoForm.reset();
         });
@@ -108,6 +125,7 @@ class AppController
 
             DisplayController.clearProjectsDisplay();
             DisplayController.displayProjects(this.#projects);
+            this.#updateStoredProjects();
 
             updateToDoForm.reset();
         });
@@ -184,6 +202,7 @@ class AppController
 
             DisplayController.clearProjectsDisplay();
             DisplayController.displayProjects(this.#projects);
+            this.#updateStoredProjects();
 
             createToDoForm.reset();
         });
@@ -235,6 +254,7 @@ class AppController
 
             DisplayController.clearProjectsDisplay();
             DisplayController.displayProjects(this.#projects);
+            this.#updateStoredProjects();
 
             createProjectForm.reset();
         });
